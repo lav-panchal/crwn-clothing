@@ -37,6 +37,9 @@ export const createUserProfileDoc = async (userAuth, additionData) => {
   return userRef;
 };
 
+// this function is used once in this project for
+//  adding shopdata into Firebase
+
 export const addCollectionAndDocuments = async (
   collectionKey,
   objectsToadd
@@ -50,6 +53,24 @@ export const addCollectionAndDocuments = async (
     batch.set(newDocRef, obj);
   });
   return await batch.commit();
+};
+// ----------
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const trasformedCollection = collections.docs.map((doc) => {
+    const { title, items } = doc.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    };
+  });
+
+  return trasformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
 };
 
 export const auth = firebase.auth();
